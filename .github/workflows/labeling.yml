@@ -1,0 +1,44 @@
+name: Danger Example
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  danger:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7.4 # adjust to match your Rails project's Ruby version
+
+      - name: Install Bundler
+        run: gem install bundler
+
+      - name: Install dependencies
+        run: |
+          bundle install --jobs 4 --retry 3
+
+      - name: Install Danger
+        run: gem install danger
+
+      - name: Run Danger
+        run: danger
+
+      - name: Comment Hello from Danger
+        if: ${{ always() }} # Always run this step, even if previous steps fail
+        uses: actions/github-script@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.issues.createComment({
+              issue_number: context.payload.pull_request.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: 'Hello from Danger!'
+            })

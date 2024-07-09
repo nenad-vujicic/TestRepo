@@ -3,10 +3,10 @@
 # Add "Orange Label" with orange color to this Pull Request
 # Note: will create label if it does not exist
 pr_number = github.pr_json["number"]
-auto_label.set(pr_number, "Orange Label", "ff8800") 
+auto_label.set(pr_number, "Big PR", "ff8800") if git.lines_of_code > 500
 
 # Warn when there is a big PR
-warn('Big PR') if git.lines_of_code > 500
+warn('Number of updated lines of code is too large to be in one PR. Perhaps it should be separated into two or more?') if git.lines_of_code > 500
 
 # Don't let testing shortcuts get into master by accident
 (git.modified_files + git.added_files - %w[Dangerfile]).each do |file|

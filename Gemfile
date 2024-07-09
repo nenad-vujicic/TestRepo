@@ -2,12 +2,8 @@
 
 source 'https://rubygems.org'
 
-gemspec
+# Code style
+gem 'rubocop', '~> 1.18'
 
-group :development do
-  # Code style
-  gem 'rubocop', '~> 1.18'
-
-  # Code Review
-  gem 'danger'
-end
+# Code Review
+gem 'danger'

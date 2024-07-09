@@ -2,8 +2,12 @@
 
 # Add "Orange Label" with orange color to this Pull Request
 # Note: will create label if it does not exist
-pr_number = github.pr_json["number"]
-auto_label.set(pr_number, "Big PR", "ff8800") if git.lines_of_code > 500
+#pr_number = github.pr_json["number"]
+#auto_label.set(pr_number, "Big PR", "ff8800") if git.lines_of_code > 500
+
+# Remove "Orange Label" from this Pull Request
+auto_label.remove("Orange Label")
+auto_label.remove("Big PR")
 
 # Warn when there is a big PR
 warn('Number of updated lines of code is too large to be in one PR. Perhaps it should be separated into two or more?') if git.lines_of_code > 500

@@ -1,5 +1,16 @@
 # frozen_string_literal: true
 
+# Function to calculate the total number of changed lines
+def total_changed_lines
+  github.pr_changes.additions + github.pr_changes.deletions
+end
+
+# Check if total changed lines exceed 50 and add a label if true
+if total_changed_lines > 50
+  warn("This PR is large. Consider breaking it down into smaller chunks.")
+  github.add_label("big PR")
+end
+
 # Warn when there is a big PR
 warn('Big PR') if git.lines_of_code > 500
 

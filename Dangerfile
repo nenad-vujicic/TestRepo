@@ -1,40 +1,14 @@
 # frozen_string_literal: true
 
-# Add "Orange Label" with orange color to this Pull Request
-# Note: will create label if it does not exist
-#pr_number = github.pr_json["number"]
-#auto_label.set(pr_number, "Big PR", "ff8800") if git.lines_of_code > 500
-
-# Remove "Orange Label" from this Pull Request
-auto_label.remove("Orange Label")
-auto_label.remove("Big PR")
+# Add orange color label to this Pull Request if number of changed lines is > 500
+pr_number = github.pr_json["number"]
+auto_label.set(pr_number, "Big PR", "FFC90E") if git.lines_of_code > 500
 
 # Warn when there is a big PR
 warn('Number of updated lines of code is too large to be in one PR. Perhaps it should be separated into two or more?') if git.lines_of_code > 500
 
-# Don't let testing shortcuts get into master by accident
-(git.modified_files + git.added_files - %w[Dangerfile]).each do |file|
-  next unless File.file?(file)
-
-  contents = File.read(file)
-  if file.start_with?('spec')
-    failure("`xit` or `fit` left in tests (#{file})") if contents =~ /^\w*[xf]it/
-    failure("`fdescribe` left in tests (#{file})") if contents =~ /^\w*fdescribe/
-  end
-end
-
-# Sometimes its a README fix, or something like that - which isn't relevant for
-# including in a CHANGELOG for example
-has_app_changes = !git.modified_files.grep(/lib/).empty?
-has_test_changes = !git.modified_files.grep(/spec/).empty?
-
-# Add a CHANGELOG entry for app changes
-if !git.modified_files.include?('CHANGELOG.md') && has_app_changes
-  failure "Please include a CHANGELOG entry. \nYou can find it at [CHANGELOG.md](https://github.com/realm/jazzy/blob/master/CHANGELOG.md)."
-  message 'Note, we hard-wrap at 80 chars and use 2 spaces after the last line.'
-end
-
-# Non-trivial amounts of app changes without tests
-if git.lines_of_code > 50 && has_app_changes && !has_test_changes
-  warn 'This PR may need tests.'
+# Add blue label to thtis Pull Request if abracadabra.txt file is changed
+if git.added_files.include?('abracadabra.txt') || git.modified_files.include?('abracadabra.txt') || git.deleted_files.include?('abracadabra.txt')
+  warn("README.md has been added, modified, or deleted. Please ensure changes are reviewed.")
+  auto_label.set(pr_number, "Abracadabra Changed", "FF0000")
 end

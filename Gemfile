@@ -7,3 +7,4 @@ gem 'rubocop', '~> 1.18'
 
 # Code Review
 gem 'danger'
+gem 'danger-auto_label'

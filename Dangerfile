@@ -8,7 +8,7 @@ end
 # Check if total changed lines exceed 50 and add a label if true
 if total_changed_lines > 50
   warn("This PR is large. Consider breaking it down into smaller chunks.")
-  github.add_label("big PR")
+  github.add_label("bug")
 end
 
 # Warn when there is a big PR

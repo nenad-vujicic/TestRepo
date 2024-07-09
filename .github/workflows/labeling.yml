@@ -1,4 +1,4 @@
-name: Danger Example
+name: Danger Proof of Concept
 
 on:
   pull_request:
@@ -15,30 +15,20 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.4.0 # adjust to match your Rails project's Ruby version
+          ruby-version: 2.7.4
 
       - name: Install Bundler
         run: gem install bundler
 
       - name: Install dependencies
         run: |
+          bundle config path vendor/bundle
           bundle install --jobs 4 --retry 3
 
       - name: Install Danger
         run: gem install danger
 
       - name: Run Danger
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: danger
-
-      - name: Comment Hello from Danger
-        if: ${{ always() }} # Always run this step, even if previous steps fail
-        uses: actions/github-script@v4
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            github.issues.createComment({
-              issue_number: context.payload.pull_request.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: 'Hello from Danger!'
-            })

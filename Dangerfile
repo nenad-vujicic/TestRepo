@@ -1,10 +1,6 @@
-# Example Dangerfile for a Ruby on Rails project
+# Dangerfile
 
-# Lint Ruby files using RuboCop
-rubocop
+# Ensure there are no very large PRs
+warn("Big PR") if git.lines_of_code > 500
 
-# Check for changes in spec files
-spec_files = git.modified_files + git.added_files
-if spec_files.any? { |file| file.start_with?('spec/') }
-  message('Remember to update tests!')
-end
+message('Hello, Danger!')

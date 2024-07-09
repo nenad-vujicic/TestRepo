@@ -3,7 +3,7 @@
 source 'https://rubygems.org'
 
 # Specify the version of Ruby your project uses
-ruby '3.4.0'
+ruby '3.3.0'
 
 # Gems needed for Danger and GitHub Actions
 gem 'danger', '~> 9.4.3'

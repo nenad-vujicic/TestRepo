@@ -1,11 +1,9 @@
 # frozen_string_literal: true
 
-if github.pr_body.length < 3 && git.lines_of_code > 10
-  warn("Please provide a summary in the Pull Request description")
-end
-
-# Check if total changed lines exceed 50 and add a label if true
-github.add_label("bug") if git.lines_of_code > 500
+# Add "Orange Label" with orange color to this Pull Request
+# Note: will create label if it does not exist
+pr_number = github.pr_json["number"]
+auto_label.set(pr_number, "Orange Label", "ff8800") 
 
 # Warn when there is a big PR
 warn('Big PR') if git.lines_of_code > 500

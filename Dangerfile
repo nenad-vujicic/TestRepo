@@ -16,5 +16,5 @@ unless modified_yaml_files.empty?
 end
 
 # Report "Everything is fine!" if no warnings were generated
-message("Everything is fine!") if git.lines_of_code <= 500 && modified_yaml_files.empty
-auto_label.set(pr_number, "Good PR", "A1FA4F") if git.lines_of_code <= 500 && modified_yaml_files.empty
+message("Everything is fine!") if git.lines_of_code <= 500 && modified_yaml_files.empty?
+auto_label.set(pr_number, "Good PR", "A1FA4F") if git.lines_of_code <= 500 && modified_yaml_files.empty?

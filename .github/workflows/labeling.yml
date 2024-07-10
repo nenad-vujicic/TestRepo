@@ -1,13 +1,13 @@
-name: Tests
-  
+name: Danger
+
+run-name: Updating labels for current PR
+
 on:
-  push:
-    branches: [master]
   pull_request:
-    branches: ['*']
+    types: [opened, synchronize]
 
 jobs:
-  danger_and_rubocop:
+  danger:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

@@ -72,7 +72,7 @@ pt:
       friendly: '%e %B %Y às %H:%M'
   helpers:
     file:
-      prompt: Escolher arquivo
+      prompt: Escolher arquivos
     submit:
       diary_comment:
         create: Comentário

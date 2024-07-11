@@ -1,6 +1,7 @@
 # Remove all previously added labels
 auto_label.remove("Big PR")
 auto_label.remove("Compromised Translations")
+auto_label.remove("Merge Commits")
 
 # Report if number of changed lines is > 500
 pr_number = github.pr_json["number"]
@@ -19,6 +20,10 @@ unless modified_yaml_files.empty?
   auto_label.set(pr_number, "Compromised Translations", "ff0000")
 end
 
+# Report if there are more than 1 commit in PR
+warn("There are more than 1 commit in this pull request. Consider squashing commits to keep the history clean.") if github.pr_json["commits"] > 1
+auto_label.set(pr_number, "Merge Commits", "ffaec9") if github.pr_json["commits"] > 1
+
 # Report "Everything is fine!" if no warnings were generated
-message("Everything is fine!") if git.lines_of_code <= 500 && modified_yaml_files.empty?
-auto_label.set(pr_number, "Good PR", "0000ff") if git.lines_of_code <= 500 && modified_yaml_files.empty?
+message("Everything is fine!") if git.lines_of_code <= 500 && modified_yaml_files.empty? && github.pr_json["commits"] == 1
+auto_label.set(pr_number, "Good PR", "00ff00") if git.lines_of_code <= 500 && modified_yaml_files.empty? && github.pr_json["commits"] == 1

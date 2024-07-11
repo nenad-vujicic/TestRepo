@@ -2,6 +2,7 @@
 auto_label.remove("Big PR")
 auto_label.remove("Compromised Translations")
 auto_label.remove("Merge Commits")
+auto_label.remove("Good PR")
 
 # Report if number of changed lines is > 500
 pr_number = github.pr_json["number"]

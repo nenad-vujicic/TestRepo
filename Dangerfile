@@ -1,14 +1,15 @@
-# Remove all previously added labels
-auto_label.remove("Big PR")
-auto_label.remove("Compromised Translations")
-auto_label.remove("Merge Commits")
-auto_label.remove("Good PR")
+# Get PR number and initialize is_good_pr variable
+pr_number = github.pr_json["number"]
+is_good_pr = true
 
 # Report if number of changed lines is > 500
-pr_number = github.pr_json["number"]
-is_big_pr = git.lines_of_code > 500
-warn("Number of updated lines of code is too large to be in one PR. Perhaps it should be separated into two or more?") if is_big_pr
-auto_label.set(pr_number, "Big PR", "ffff00") if is_big_pr
+if git.lines_of_code > 500
+  warn("Number of updated lines of code is too large to be in one PR. Perhaps it should be separated into two or more?")
+  auto_label.set(pr_number, "Big PR", "ffff00")
+  is_good_pr = false
+else
+  auto_label.remove("Big PR")
+end
 
 # Get list of translation files (except en.yml) which are modified
 modified_yml_files = git.modified_files.select do |file|
@@ -16,17 +17,28 @@ modified_yml_files = git.modified_files.select do |file|
 end
 
 # Report if some translation file (except en.yml) is modified
-unless modified_yml_files.empty?
+if modified_yml_files.empty?
+  auto_label.remove("Compromised Translations")
+else
   modified_files_str = modified_yml_files.map { |file| "`#{file}`" }.join(", ")
   warn("The following YAML files other than `en.yml` have been modified: #{modified_files_str}. Only `en.yml` is allowed to be changed.")
   auto_label.set(pr_number, "Compromised Translations", "ff0000")
+  is_good_pr = false
 end
 
 # Report if there are merge-commits in PR
-are_merge_commits_available = git.commits.any? { |c| c.parents.count > 1 }
-warn("Merge commits found in this pull request. Please, read CONTRIBUTE.md!") if are_merge_commits_available
-auto_label.set(pr_number, "Merge Commits", "ffaec9") if are_merge_commits_available
+if git.commits.any? { |c| c.parents.count > 1 }
+  warn("Merge commits are found in PR. Please rebase to get rid of the merge commits in this PR and read CONTRIBUTE.md.")
+  auto_label.set(pr_number, "Merge Commits", "ffaec9")
+  is_good_pr = false
+else
+  auto_label.remove("Merge Commits")
+end
 
 # Report "Everything is fine!" if no warnings were generated
-message("Everything is fine!") if !is_big_pr && modified_yml_files.empty? && !are_merge_commits_available
-auto_label.set(pr_number, "Good PR", "00ff00") if !is_big_pr && modified_yml_files.empty? && !are_merge_commits_available
+if is_good_pr
+  message("Everything is fine!")
+  auto_label.set(pr_number, "Good PR", "00ff00")
+else
+  auto_label.remove("Good PR")
+end
